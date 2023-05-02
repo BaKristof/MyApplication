@@ -12,6 +12,8 @@ public class MyGLSurfaceView extends GLSurfaceView {
     private final  Context mContext;
     private float previousX;
     private float previousY;
+    private float tavolsag;
+
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
@@ -28,14 +30,19 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
 
         switch (e.getAction()) {
+            case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
 
-                float dx = x - previousX;
-                float dy = y - previousY;
 
-
-                renderer.mozgat(x,y);
+                double angel = Math.atan2( previousY - y, previousX - x ) * ( 180 / Math.PI );
+                double distence = Math.sqrt(  Math.pow(previousY-y,2)+Math.pow(previousX-x,2));
+                if(distence>30)distence=0.0005;
+              //  renderer.mozgat( angel , distence );
                 requestRender();
+                break;
+            case MotionEvent.ACTION_UP:
+                renderer.setValami(false);
+                break;
         }
 
         previousX = x;
@@ -44,6 +51,10 @@ public class MyGLSurfaceView extends GLSurfaceView {
     }
     public MyGLSurfaceView(Context context ,MyGLRenderer Renderer){
         super(context);
+
+
+       // previousX= 0.0f;
+       // previousY=0.0f;
 
         mContext = context;
         renderer = Renderer;

@@ -20,8 +20,12 @@ public class MainActivity extends AppCompatActivity {
 
         MyGLRenderer renderer = new MyGLRenderer(this);
 
+
         mGLView = new MyGLSurfaceView(this,renderer);
+
+
         setContentView(mGLView);
+
 
        /* setContentView(R.layout.activity_main);
         imageView =findViewById(R.id.imageView);
