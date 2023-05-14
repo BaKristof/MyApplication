@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.widget.ImageView;
 
 
@@ -18,12 +20,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        MyGLRenderer renderer = new MyGLRenderer(this);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        MyGLRenderer renderer = new MyGLRenderer(this,displayMetrics.heightPixels,displayMetrics.widthPixels);
 
 
         mGLView = new MyGLSurfaceView(this,renderer);
-
-
         setContentView(mGLView);
 
 

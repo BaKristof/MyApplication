@@ -23,7 +23,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
         float hight =disp.heightPixels/100;
         float width =disp.widthPixels/100;
 
-        float x = e.getX()/width;
+       float x = e.getX()/width;
         float y = e.getY()/hight;
         x=((x-50)*2)/100;
         y=(((y-50)*2)/100)*-1;

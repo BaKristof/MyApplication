@@ -7,6 +7,8 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
+import android.util.DisplayMetrics;
+import android.util.Log;
 
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -29,17 +31,20 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private  Triangle triangle;
 
     private  Square msquer;
+    private int hpix;
+    private int wpix;
 
-
-
+    private Background bg;
     private static Context Context;
     private  Joystic joystic1;
 
     private Context context2;
 
-    public MyGLRenderer(Context context) {
+    public MyGLRenderer(Context context,int a, int b) {
         this.Context = context;
         this.context2 =context;
+        hpix = a ;
+        wpix = b;
         //bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.karakter);
     }
 
@@ -52,37 +57,38 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         GLES20.glDepthFunc(GLES20.GL_LEQUAL);
 
-
-       // joystic1.draw();
-
-
-        //msquer.draw2();
-
         Matrix.setLookAtM(viewMatrix, 0, 0, 0, 3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
         Matrix.multiplyMM(vPMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
-       // triangle.draw(vPMatrix);
-          msquer.draw3(vPMatrix);
+       //   msquer.draw3(vPMatrix);
+       //  joystic1.draw();
+           bg.draw(vPMatrix);
+      //  Log.println(Log.ERROR,"arajzolaselott","Valami1111  "+GLES20.glGetError());
+
     }
     @Override
     public void onSurfaceChanged(GL10 unused, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
         float ratio = (float) width / height;
         Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
-
+//        bg.setMvpMatrix(vPMatrix);
     }
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
 
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-        GLES20.glEnable(GLES20.GL_TEXTURE_2D);
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA,GLES20.GL_ONE_MINUS_SRC_ALPHA);
+
 
 
         valami= true;
-        msquer = new Square(1);
+      //  msquer = new Square();
+
+       // joystic1 = new Joystic(0.0f,0.0f);*/
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-       //joystic1 = new Joystic(-0.75f,-0.75f);
         //triangle = new Triangle();
 
+        bg= new Background(hpix,wpix);
 
     }
 
@@ -95,14 +101,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
 
-   /* public void mozgat(double angel, double distance){
-        do {
-        double midel[]= msquer.getSquareCoordsmidel();
-            double x=midel[0]+Math.sin(angel);
-            double y=midel[1]+Math.cos(angel);
-            msquer.updateVert((float) y,(float) x);
-        }while (valami);
-    }*/
+    public void mozgat(float angel){
+        bg.mozgat(angel);
+    }
 
 
     public static int loadTexture(int resourceId) {
