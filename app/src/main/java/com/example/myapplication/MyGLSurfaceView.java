@@ -30,18 +30,19 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
 
         switch (e.getAction()) {
-            case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
 
 
-                double angel = Math.atan2( previousY - y, previousX - x ) * ( 180 / Math.PI );
-                double distence = Math.sqrt(  Math.pow(previousY-y,2)+Math.pow(previousX-x,2));
-                if(distence>30)distence=0.0005;
+               //double angel = Math.atan2( previousY - y, previousX - x ) * ( 180 / Math.PI );
+               /* double distence = Math.sqrt(  Math.pow(previousY-y,2)+Math.pow(previousX-x,2));
+                if(distence>30)distence=0.0005;*/
               //  renderer.mozgat( angel , distence );
+
+
+              // renderer.swmozgat( (float) angel);
+                renderer.mozgat(90);
+                renderer.mozgateneym(90.0f);
                 requestRender();
-                break;
-            case MotionEvent.ACTION_UP:
-                renderer.setValami(false);
                 break;
         }
 
@@ -53,8 +54,8 @@ public class MyGLSurfaceView extends GLSurfaceView {
         super(context);
 
 
-       // previousX= 0.0f;
-       // previousY=0.0f;
+        previousX= 0.0f;
+        previousY=0.0f;
 
         mContext = context;
         renderer = Renderer;

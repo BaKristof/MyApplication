@@ -7,9 +7,9 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
-import android.util.DisplayMetrics;
-import android.util.Log;
 
+
+import java.util.Random;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -21,6 +21,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private final float[] vPMatrix = new float[16];
     private final float[] projectionMatrix = new float[16];
     private final float[] viewMatrix = new float[16];
+    private final float[] vPMatrixsw = new float[16];
+    private final float[] vPMatrixBack = new float[16];
+
     private boolean valami;
 
     public void setValami(boolean valami) {
@@ -34,11 +37,16 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private int hpix;
     private int wpix;
 
+    private long lastFrameTime;
+    private float deltaTime;
+
     private Background bg;
+    private Sword sw;
     private static Context Context;
     private  Joystic joystic1;
 
     private Context context2;
+    private Priestenemy pse;
 
     public MyGLRenderer(Context context,int a, int b) {
         this.Context = context;
@@ -54,15 +62,44 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
+
+
+        long currentFrameTime = System.nanoTime();
+        deltaTime = (currentFrameTime - lastFrameTime) / 1000000000.0f; // Convert nanoseconds to seconds
+        lastFrameTime = currentFrameTime;
+
+
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         GLES20.glDepthFunc(GLES20.GL_LEQUAL);
 
         Matrix.setLookAtM(viewMatrix, 0, 0, 0, 3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
         Matrix.multiplyMM(vPMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
-       //   msquer.draw3(vPMatrix);
+
+        Matrix.multiplyMM(vPMatrixsw,0,projectionMatrix,0,viewMatrix,0);
+
+
+        float distance = 0.5f;
+        float angle = 45.0f;
+
+        float translateX = distance * (float)Math.cos(Math.toRadians(angle));
+        float translateY = distance * (float)Math.sin(Math.toRadians(angle));
+        float translateZ = 0.0f;
+        float[] translationMatrix = new float[16];
+        Matrix.setIdentityM(translationMatrix, 0);
+        Matrix.translateM(translationMatrix, 0, translateX, translateY, translateZ);
+        Matrix.multiplyMM(vPMatrixBack,0,translationMatrix,0,vPMatrix,0);
+
+
+       // pse.Move((float) msquer.getSquareCoordsmidel()[0],(float) msquer.getSquareCoordsmidel()[1],deltaTime,0.1f    );
+        //bg.draw(vPMatrixBack);
+        msquer.draw3(vPMatrix);
+        pse.draw3(vPMatrix);
+
+        sw.draw3(vPMatrixsw);
+
+        // msquer.drawsword();
+        //  msquer.changedegre(45f);
        //  joystic1.draw();
-           bg.draw(vPMatrix);
-      //  Log.println(Log.ERROR,"arajzolaselott","Valami1111  "+GLES20.glGetError());
 
     }
     @Override
@@ -79,17 +116,16 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA,GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
-
+        Random r = new Random();
 
         valami= true;
-      //  msquer = new Square();
 
-       // joystic1 = new Joystic(0.0f,0.0f);*/
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        //triangle = new Triangle();
-
+        sw= new Sword();
+        pse = new Priestenemy(-0.35f,-0.4f,R.drawable.priest1_v1_1);
+        msquer = new Square();
         bg= new Background(hpix,wpix);
-
+        //r.nextFloat()*2-1
     }
 
 
@@ -100,10 +136,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         return shader;
     }
 
-
     public void mozgat(float angel){
         bg.mozgat(angel);
     }
+    public void swmozgat(float angel){sw.changedegre(angel);}
+    public void mozgateneym (float angel){ pse.Move( msquer.getSquareCoordsmidel()[0], msquer.getSquareCoordsmidel()[1],deltaTime,0.1f);}
+
 
 
     public static int loadTexture(int resourceId) {

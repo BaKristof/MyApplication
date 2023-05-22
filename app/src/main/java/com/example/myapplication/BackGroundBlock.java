@@ -12,6 +12,7 @@ public class BackGroundBlock {
     private float squareCoords[];
     private float x1;
     private float y1;
+    private boolean seable;
     private float[] texCoords = {
             0.0f, 0.0f,
             0.0f, 1.0f,
@@ -49,6 +50,7 @@ public class BackGroundBlock {
         TexCoordBuffer.put(texCoords).position(0);
 
     }
+
     public FloatBuffer getVertexBuffer() {
         return vertexBuffer;
     }
@@ -74,9 +76,8 @@ public class BackGroundBlock {
                 '}';
     }
 
-    public void mozgat (float angel){
+    public void mozgat (float angel,float elmozdul){
 
-        float elmozdul = 0.0000001f;
         float v= elmozdul * (float) Math.sin(angel);
         float v1 =elmozdul *(float) Math.cos(angel);
         float left =x1-v;
@@ -90,5 +91,17 @@ public class BackGroundBlock {
         vertexBuffer.put(squareCoords);
         vertexBuffer.position(0);
 
+    }
+
+    public void isseable (float top,float bottom,float right,float left){
+        if((top >1||top<-1)&&(bottom>1 || bottom<-1)&&(right>1||right<-1)&&(left>1||left<-1)){
+            seable= false;
+        }
+        else seable = true;
+
+    }
+
+    public float[] getSquareCoords() {
+        return squareCoords;
     }
 }
